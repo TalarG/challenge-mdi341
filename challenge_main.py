@@ -1,22 +1,26 @@
 import numpy as np
 import tensorflow as tf
 import sys
+from os.path import join
 
 from sklearn.utils import shuffle
 from utils import conv_layer, fc_layer
+from utils import Cursors
 
 
 #############################################
 ############### IMPORT DATA #################
 #############################################
 
-images_train_fname    = 'data_train.bin'
-templates_train_fname = 'fv_train.bin'
+data_path = '..'
 
-images_valid_fname    = 'data_valid.bin'
-templates_valid_fname = 'fv_valid.bin'
+images_train_fname    = join(data_path, 'data_train.bin')
+templates_train_fname = join(data_path, 'fv_train.bin')
 
-images_test_fname     = 'data_test.bin'
+images_valid_fname    = join(data_path, 'data_valid.bin')
+templates_valid_fname = join(data_path, 'fv_valid.bin')
+
+images_test_fname     = join(data_path, 'data_test.bin')
 
 # number of images
 num_train_images = 100000
@@ -83,9 +87,9 @@ nb_max_iter = np.floor(max_epoch / epoch_step)
 
 dropout = 0.5
 
-summary_dir = 'tensorlog/'
+summary_dir = '../tensorlog'
 folder_name = 'epoch_%i_dp_%.1f' % (dropout, max_epoch)
-full_dir = summary_dir + folder_name
+full_dir = join(summary_dir, folder_name)
 
 validation_log_frequency = 5
 validation_log_frequency_iter = np.floor(validation_log_frequency / epoch_step)
@@ -208,17 +212,9 @@ train_imgs = train_imgs.reshape([-1, image_dim, image_dim, 1])
 valid_imgs = valid_imgs.reshape([-1, image_dim, image_dim, 1])
 test_imgs = test_imgs.reshape([-1, image_dim, image_dim, 1])
 
-#X_train, y_train = shuffle(train_imgs, train_template_data, random_state=42)
+X_train, y_train = shuffle(train_imgs, train_template_data, random_state=42)
 
-X_train, y_train = (train_imgs, train_template_data)
-
-class Cursors(object):
-	
-	train_current_pos = 0
-	validation_current_pos = 0
-
-	def __init():
-		return None
+#X_train, y_train = (train_imgs, train_template_data)
 
 cursors = Cursors()
 

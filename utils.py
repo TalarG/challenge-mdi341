@@ -59,10 +59,13 @@ def fc_layer(input_tensor, shape, layer_name, keep_prob, act=tf.nn.relu):
 			return act_dp
 
 
+class Cursors(object):
+	
+	train_current_pos = 0
+	validation_current_pos = 0
 
-
-
-
+	def __init():
+		return None
 
 
 
