@@ -85,10 +85,10 @@ epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
-dropout = 0.5
+dropout = 0.9
 
 summary_dir = '../tensorlog'
-folder_name = 'epoch_%i_dp_%.1f' % (dropout, max_epoch)
+folder_name = 'epoch_%.1f_dp_%i_batch_norm' % (dropout, max_epoch)
 full_dir = join(summary_dir, folder_name)
 
 validation_log_frequency = 5
@@ -108,8 +108,9 @@ with tf.name_scope('input'):
 	x_ = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1], name='x-input')
 	y_ = tf.placeholder(tf.float32, [None, template_dim], name='y-input')
 	keep_prob = tf.placeholder(tf.float32, name='dropout')
+	is_training = tf.placeholder(np.float32, name='is-training')
 
-placeholder_dict = {'x_': x_, 'y_': y_, 'keep_prob': keep_prob}
+placeholder_dict = {'x_': x_, 'y_': y_, 'keep_prob': keep_prob, 'is-training': is_training}
 
 #############################################
 ############### THE NETWORK #################
@@ -121,23 +122,23 @@ filter_nb_1 = 10
 filter_nb_2 = 15
 filter_nb_3 = 20
 
-hidden1 = conv_layer(x_, [filter_size, filter_size, 1, filter_nb_1], 'conv_1', stride, keep_prob)
-hidden2 = conv_layer(hidden1, [filter_size, filter_size, filter_nb_1, filter_nb_1], 'conv_2', stride, keep_prob)
+hidden1 = conv_layer(x_, [filter_size, filter_size, 1, filter_nb_1], 'conv_1', stride, keep_prob, is_training)
+hidden2 = conv_layer(hidden1, [filter_size, filter_size, filter_nb_1, filter_nb_1], 'conv_2', stride, keep_prob, is_training)
 
 pool3 = tf.nn.max_pool(hidden2, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
-hidden4 = conv_layer(pool3, [filter_size, filter_size, filter_nb_1, filter_nb_2], 'conv_4', stride, keep_prob)
-hidden5 = conv_layer(hidden4, [filter_size, filter_size, filter_nb_2, filter_nb_2], 'conv_5', stride, keep_prob)
+hidden4 = conv_layer(pool3, [filter_size, filter_size, filter_nb_1, filter_nb_2], 'conv_4', stride, keep_prob, is_training)
+hidden5 = conv_layer(hidden4, [filter_size, filter_size, filter_nb_2, filter_nb_2], 'conv_5', stride, keep_prob, is_training)
 
 pool6 = tf.nn.max_pool(hidden5, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
-hidden7 = conv_layer(pool6, [filter_size, filter_size, filter_nb_2, filter_nb_3], 'conv_7', stride, keep_prob)
-hidden8 = conv_layer(hidden7, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv_8', stride, keep_prob)
+hidden7 = conv_layer(pool6, [filter_size, filter_size, filter_nb_2, filter_nb_3], 'conv_7', stride, keep_prob, is_training)
+hidden8 = conv_layer(hidden7, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv_8', stride, keep_prob, is_training)
 
 pool9 = tf.nn.max_pool(hidden8, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
-hidden10 = conv_layer(pool9, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv_10', stride, keep_prob)
-hidden11 = conv_layer(hidden10, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv_11', stride, keep_prob)
+hidden10 = conv_layer(pool9, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv_10', stride, keep_prob, is_training)
+hidden11 = conv_layer(hidden10, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv_11', stride, keep_prob, is_training)
 
 pool12 = tf.nn.max_pool(hidden11, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
@@ -164,7 +165,8 @@ tf.summary.scalar('train_euclidean_loss', euclidean_loss)
 with tf.name_scope('learning_rate'):
     global_step = tf.Variable(0, trainable=False)
     decay_epoch = 20
-    learning_rate = tf.train.exponential_decay(0.001, global_step, np.floor(decay_epoch * nbiter_epoch), 0.97, staircase=True)
+    inital_lr = 1e-6
+    learning_rate = tf.train.exponential_decay(inital_lr, global_step, np.floor(decay_epoch * nbiter_epoch), 0.97, staircase=True)
 
 tf.summary.scalar('learning_rate', learning_rate)
 
@@ -231,6 +233,8 @@ def feed_func(batch_size, mode='train', placeholder_dict=placeholder_dict, curso
 
 		cursors.train_current_pos = ind_batch[-1] + 1
 
+		is_training_tmp = 1.0
+
 	elif mode == 'valid':
 
 		tmp_cur = cursors.validation_current_pos
@@ -241,7 +245,9 @@ def feed_func(batch_size, mode='train', placeholder_dict=placeholder_dict, curso
 
 		cursors.validation_current_pos = ind_batch[-1] + 1
 
-	return {placeholder_dict['x_']: X_tmp, placeholder_dict['y_']: y_tmp, placeholder_dict['keep_prob']: dropout}
+		is_training_tmp = 0.0
+
+	return {placeholder_dict['x_']: X_tmp, placeholder_dict['y_']: y_tmp, placeholder_dict['keep_prob']: dropout, placeholder_dict['is-training']: is_training_tmp}
 
 
 i = 0
