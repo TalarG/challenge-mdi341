@@ -85,7 +85,7 @@ epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
-dropout = 0.9
+dropout = 0.5
 
 summary_dir = '../tensorlog'
 folder_name = 'epoch_%.1f_dp_%i_batch_norm' % (dropout, max_epoch)
@@ -98,6 +98,8 @@ training_log_frequency = 0.5
 training_log_frequency_iter = np.floor(training_log_frequency / epoch_step)
 
 nb_montecarlo_predictions = 50
+
+inital_lr = 5e-6
 
 
 #####################################################################################################################
@@ -153,10 +155,8 @@ y = fc_layer(hidden13, [3 * 3 * filter_nb_3, template_dim], 'fc_final', keep_pro
 #############################################
 
 """ Loss for regression """
-with tf.name_scope('train_euclidean_loss'):
-	loss_samples = tf.reduce_sum(tf.square(y - y_), axis=1)
-	with tf.name_scope('total'):
-		euclidean_loss = tf.reduce_mean(loss_samples, axis=0)
+with tf.name_scope('training'):
+	euclidean_loss = tf.reduce_mean(tf.square(y - y_))
 
 tf.summary.scalar('train_euclidean_loss', euclidean_loss)
 
@@ -165,10 +165,9 @@ tf.summary.scalar('train_euclidean_loss', euclidean_loss)
 with tf.name_scope('learning_rate'):
     global_step = tf.Variable(0, trainable=False)
     decay_epoch = 20
-    inital_lr = 1e-6
     learning_rate = tf.train.exponential_decay(inital_lr, global_step, np.floor(decay_epoch * nbiter_epoch), 0.97, staircase=True)
 
-tf.summary.scalar('learning_rate', learning_rate)
+tf.summary.scalar('learning_rate_summary', learning_rate)
 
 
 """ Optimizer """
@@ -273,12 +272,12 @@ while i < nb_max_iter:
 
 		montecarlo_predictions_validation = np.mean(montecarlo_samples_validation, axis=2)
 		
-		validation_score = np.mean(np.sum((montecarlo_predictions_validation - valid_template_data) ** 2, axis=1))
+		validation_score = np.mean((montecarlo_predictions_validation - valid_template_data)** 2)
 
 		valid_sum = sess.run(summary_validation_loss, feed_dict={validation_loss:validation_score})
 		validation_writer.add_summary(valid_sum, i)
 
-		print('{:.1f} epoch || validation score: {:.3f}'.format(i * epoch_step, validation_score))
+		print('{:.1f} epoch || validation score: {:.4e}'.format(i * epoch_step, validation_score))
 
 
 	####################### TRAIN MODE ############################
@@ -288,7 +287,7 @@ while i < nb_max_iter:
 		train_writer.add_summary(train_sum, i)
 
 		####
-		print('{:.1f} epoch || training loss: {:.3f}'.format(i * epoch_step, loss))
+		print('{:.1f} epoch || training loss: {:.4e}'.format(i * epoch_step, loss))
 
 	else:
 		_ = sess.run(train_op, feed_dict=feed_func(batch_train, mode='train'))
