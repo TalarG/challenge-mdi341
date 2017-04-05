@@ -321,7 +321,7 @@ while i < nb_max_iter:
 	####################### TRAIN MODE ############################
 	if ((np.mod(i, training_log_frequency_iter) == 0) & (not i == 0)):
 
-		train_sum, _, loss, squared_error = sess.run([merged_train_summary, train_op, euclidean_loss, squared_error], feed_dict=feed_func(batch_train, mode='train'))
+		train_sum, _, loss = sess.run([merged_train_summary, train_op, euclidean_loss], feed_dict=feed_func(batch_train, mode='train'))
 		
 		train_writer.add_summary(train_sum, i)
 
