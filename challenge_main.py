@@ -159,7 +159,7 @@ y = fc_layer(hidden13, [3 * 3 * filter_nb_3, template_dim], 'fc-final', keep_pro
 
 """ Loss for regression """
 with tf.name_scope('training'):
-	euclidean_loss = tf.reduce_mean(y - y_)
+	euclidean_loss = tf.reduce_mean(tf.square(y - y_))
 
 tf.summary.scalar('train_euclidean_loss', euclidean_loss)
 
