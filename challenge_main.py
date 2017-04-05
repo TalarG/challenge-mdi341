@@ -109,7 +109,8 @@ nb_montecarlo_predictions = 50
 
 inital_lr = 5e-6
 
-
+np.random.seed(666)
+tf.set_random_seed(10)
 #####################################################################################################################
 #####################################################################################################################
 
@@ -356,8 +357,8 @@ while i < nb_max_iter:
 		montecarlo_predictions_evaluation = np.mean(montecarlo_samples_evaluation, axis=2)
 		#centred_prediction_evaluation = montecarlo_samples_evaluation - montecarlo_predictions_evaluation.reshape(-1, -1, 1)
 
-
 		train_squared_error = np.sum((montecarlo_predictions_evaluation - train_template_data)** 2, axis=1)
+		full_train_loss = np.mean((montecarlo_predictions_evaluation - train_template_data)** 2)
 
 
 		sorted_ind = np.argsort(train_squared_error)
@@ -372,8 +373,12 @@ while i < nb_max_iter:
 		train_writer.add_summary(sum_high_err_img, i)
 		train_writer.add_summary(sum_low_err_img, i)
 
+		print('{:.1f} epoch || full training loss: {:.4e}'.format(i * epoch_step, full_train_loss))
+
 	if np.mod(i, reshuffling_frequency_iter) == 0:
+		print('Shuffling training data')
 		train_imgs, train_template_data = shuffle(train_imgs, train_template_data, random_state=42)
+
 
 	i += 1
 
