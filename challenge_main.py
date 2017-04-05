@@ -153,8 +153,6 @@ hidden13 = tf.reshape(pool12, shape=[-1, 3 * 3 * filter_nb_3])
 
 y = fc_layer(hidden13, [3 * 3 * filter_nb_3, template_dim], 'fc-final', keep_prob, act=None)
 
-squared_error = tf.reduce_sum(tf.square(y - y_), axis=1)
-
 #############################################
 ################ THE LOSS ###################
 #############################################
