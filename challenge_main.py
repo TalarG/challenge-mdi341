@@ -80,8 +80,8 @@ nb_img_test, _ = test_imgs.shape
 _, predictions_size = train_template_data.shape
 
 max_epoch = 300
-batch_train = 400
-batch_test = 400
+batch_train = 500
+batch_test = 500
 
 epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
@@ -94,13 +94,16 @@ folder_name = 'epoch_%.1f_dp_%i_batch_norm' % (dropout, max_epoch)
 full_dir = join(summary_dir, folder_name)
 
 validation_log_frequency = 5
-validation_log_frequency_iter = np.floor(validation_log_frequency / epoch_step)
+validation_log_frequency_iter = np.floor(validation_log_frequency / epoch_step).astype(int)
 
 evaluation_log_frequency = 20
-evaluation_log_frequency_iter = np.floor(evaluation_log_frequency / epoch_step)
+evaluation_log_frequency_iter = np.floor(evaluation_log_frequency / epoch_step).astype(int)
 
 training_log_frequency = 0.5
-training_log_frequency_iter = np.floor(training_log_frequency / epoch_step)
+training_log_frequency_iter = np.floor(training_log_frequency / epoch_step).astype(int)
+
+reshuffling_frequency = 3.0
+reshuffling_frequency_iter = np.floor(reshuffling_frequency / epoch_step).astype(int)
 
 nb_montecarlo_predictions = 50
 
@@ -196,10 +199,14 @@ with tf.name_scope('display_training_images'):
 	training_high_error_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1], name='high_error')
 	training_low_error_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1], name='low_error')
 
-	summary_high_variance_images = tf.summary.image('high_variance', training_high_variance_images, 5)
-	summary_low_variance_images = tf.summary.image('low_variance', training_low_variance_images, 5)
-	summary_high_error_images = tf.summary.image('high_error', training_high_error_images, 5)
-	summary_low_error_images = tf.summary.image('low_error', training_low_error_images, 5)
+	with tf.name_scope('high_variance'):
+		summary_high_variance_images = tf.summary.image('high_variance', training_high_variance_images, 5)
+	with tf.name_scope('low_variance'):
+		summary_low_variance_images = tf.summary.image('low_variance', training_low_variance_images, 5)
+	with tf.name_scope('high_error'):
+		summary_high_error_images = tf.summary.image('high_error', training_high_error_images, 5)
+	with tf.name_scope('low_error'):
+		summary_low_error_images = tf.summary.image('low_error', training_low_error_images, 5)
 
 
 summary_images = tf.summary.merge([summary_high_variance_images, 
@@ -344,9 +351,9 @@ while i < nb_max_iter:
 
 			for kk in np.arange(nb_montecarlo_predictions):
 				mc_sample = sess.run(y, feed_dict=feed_dict)
-				montecarlo_samples_validation[ind_tmp, :, kk] = mc_sample
+				montecarlo_samples_evaluation[ind_tmp, :, kk] = mc_sample
 
-		montecarlo_predictions_evaluation = np.mean(montecarlo_samples_validation, axis=2)
+		montecarlo_predictions_evaluation = np.mean(montecarlo_samples_evaluation, axis=2)
 		#centred_prediction_evaluation = montecarlo_samples_evaluation - montecarlo_predictions_evaluation.reshape(-1, -1, 1)
 
 
@@ -362,8 +369,11 @@ while i < nb_max_iter:
 
 		sum_high_err_img, sum_low_err_img=sess.run([summary_high_error_images, summary_low_error_images], feed_dict=feed_images)
 
-		train_writer.add_summary(sum_high_err_img, epoch)
-		train_writer.add_summary(sum_low_err_img, epoch)
+		train_writer.add_summary(sum_high_err_img, i)
+		train_writer.add_summary(sum_low_err_img, i)
+
+	if np.mod(i, reshuffling_frequency_iter) == 0:
+		train_imgs, train_template_data = shuffle(train_imgs, train_template_data, random_state=42)
 
 	i += 1
 
