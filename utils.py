@@ -1,5 +1,4 @@
 import tensorflow as tf
-#import ipdb
 
 #### Functions
 def conv_layer(input_tensor, shape, layer_name, stride, keep_prob, is_training):
@@ -12,17 +11,15 @@ def conv_layer(input_tensor, shape, layer_name, stride, keep_prob, is_training):
 
 		decay = 0.999
 		epsilon = 1e-3
-		# This Variable will hold the state of the weights for the layer
-		#with tf.variable_scope('weights'):
+
 		weights = tf.get_variable(name='weights', shape=shape, initializer=tf.contrib.layers.xavier_initializer())
 
-		#with tf.variable_scope('biases'):
 		biases = tf.get_variable(name='bias', shape=shape[3], initializer=tf.constant_initializer(0.02))
 
 		with tf.name_scope('pre-activation'):
 		    preactivate = tf.nn.conv2d(input_tensor, weights, strides=[1, stride, stride, 1], padding='SAME') + biases
 
-		#ipdb.set_trace()
+		#import ipdb; ipdb.set_trace()
 		with tf.name_scope('batch-normalization'):
 			scale = tf.get_variable(name='scale', shape=preactivate.shape[1:], initializer=tf.constant_initializer(1.0))
 			beta = tf.get_variable(name='beta', shape=preactivate.shape[1:], initializer=tf.constant_initializer(0.0))
@@ -84,6 +81,7 @@ class Cursors(object):
 	
 	train_current_pos = 0
 	validation_current_pos = 0
+	eval_current_pos = 0
 
 	def __init():
 		return None
