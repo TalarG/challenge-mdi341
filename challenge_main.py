@@ -195,18 +195,20 @@ summary_validation_loss = tf.summary.scalar('validation_euclidean_loss', validat
 ############ IMAGE SUMMARIES
 with tf.name_scope('display_training_images'):
 
-	training_high_variance_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1], name='high_variance')
-	training_low_variance_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1], name='low_variance')
-	training_high_error_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1], name='high_error')
-	training_low_error_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1], name='low_error')
-
 	with tf.name_scope('high_variance'):
+		training_high_variance_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1])
 		summary_high_variance_images = tf.summary.image('high_variance', training_high_variance_images, 5)
+
 	with tf.name_scope('low_variance'):
+		training_low_variance_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1])
 		summary_low_variance_images = tf.summary.image('low_variance', training_low_variance_images, 5)
+	
 	with tf.name_scope('high_error'):
+		training_high_error_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1])
 		summary_high_error_images = tf.summary.image('high_error', training_high_error_images, 5)
+	
 	with tf.name_scope('low_error'):
+		training_low_error_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1])
 		summary_low_error_images = tf.summary.image('low_error', training_low_error_images, 5)
 
 
