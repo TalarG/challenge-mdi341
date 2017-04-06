@@ -111,6 +111,9 @@ inital_lr = 5e-6
 
 np.random.seed(666)
 tf.set_random_seed(10)
+
+nb_display_images = 8
+
 #####################################################################################################################
 #####################################################################################################################
 
@@ -193,27 +196,54 @@ summary_validation_loss = tf.summary.scalar('validation_euclidean_loss', validat
 
 
 ############ IMAGE SUMMARIES
+
+
+#### Training
 with tf.name_scope('training-high-variance-images'):
 	training_high_variance_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1])
-summary_high_variance_images = tf.summary.image('high_variance', training_high_variance_images, 5)
+summary_training_high_variance_images = tf.summary.image('training-high-variance', training_high_variance_images, nb_display_images)
 
 with tf.name_scope('training-low-variance-images'):
 	training_low_variance_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1])
-summary_low_variance_images = tf.summary.image('low_variance', training_low_variance_images, 5)
+summary_training_low_variance_images = tf.summary.image('training-low-variance', training_low_variance_images, nb_display_images)
 
 with tf.name_scope('training-high-error-images'):
 	training_high_error_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1])
-summary_high_error_images = tf.summary.image('high_error', training_high_error_images, 5)
+summary_training_high_error_images = tf.summary.image('training-high-error', training_high_error_images, nb_display_images)
 
 with tf.name_scope('training-low-error-images'):
 	training_low_error_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1])
-summary_low_error_images = tf.summary.image('low_error', training_low_error_images, 5)
+summary_training_low_error_images = tf.summary.image('training-low-error', training_low_error_images, nb_display_images)
 
 
-summary_images = tf.summary.merge([summary_high_variance_images, 
-								summary_low_variance_images,
-								summary_high_error_images,
-								summary_low_error_images])
+summary_training_images = tf.summary.merge([summary_training_high_variance_images, 
+								summary_training_low_variance_images,
+								summary_training_high_error_images,
+								summary_training_low_error_images])
+
+#### Validation
+with tf.name_scope('validation-high-variance-images'):
+	validation_high_variance_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1])
+summary_validation_high_variance_images = tf.summary.image('validation-high-variance', validation_high_variance_images, nb_display_images)
+
+with tf.name_scope('validation-low-variance-images'):
+	validation_low_variance_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1])
+summary_validation_low_variance_images = tf.summary.image('validation-low-variance', validation_low_variance_images, nb_display_images)
+
+with tf.name_scope('validation-high-error-images'):
+	validation_high_error_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1])
+summary_validation_high_error_images = tf.summary.image('validation-high-error', validation_high_error_images, nb_display_images)
+
+with tf.name_scope('validation-low-error-images'):
+	validation_low_error_images = tf.placeholder(tf.float32, [None, image_dim, image_dim, 1])
+summary_validation_low_error_images = tf.summary.image('validation-low-error', validation_low_error_images, nb_display_images)
+
+
+summary_validation_images = tf.summary.merge([summary_validation_high_variance_images, 
+								summary_validation_low_variance_images,
+								summary_validation_high_error_images,
+								summary_validation_low_error_images])
+
 
 
 ##########################################################################################################
@@ -288,7 +318,8 @@ def feed_func(batch_size, mode='train', placeholder_dict=placeholder_dict, curso
 
 		is_training_tmp = 0.0
 
-	return {placeholder_dict['x_']: X_tmp, placeholder_dict['y_']: y_tmp, placeholder_dict['keep_prob']: dropout, placeholder_dict['is-training']: is_training_tmp}
+	return {placeholder_dict['x_']: X_tmp, placeholder_dict['y_']: y_tmp, 
+			placeholder_dict['keep_prob']: dropout, placeholder_dict['is-training']: is_training_tmp}
 
 
 
@@ -316,7 +347,23 @@ while i < nb_max_iter:
 
 		montecarlo_predictions_validation = np.mean(montecarlo_samples_validation, axis=2)
 		
+		validation_squared_error = np.sum((montecarlo_predictions_validations - valid_template_data)** 2, axis=1)
 		validation_score = np.mean((montecarlo_predictions_validation - valid_template_data)** 2)
+
+
+		sorted_ind = np.argsort(validation_squared_error)
+		high_error_ind = sorted_ind[-nb_display_images:]
+		low_error_ind = sorted_ind[:nb_display_images]
+
+		feed_images = {validation_high_error_images: valid_imgs[high_error_ind], 
+					validation_low_error_images:valid_imgs[low_error_ind]}
+
+		sum_high_err_img, sum_low_err_img = sess.run([summary_validation_high_error_images, 
+												summary_validation_low_error_images], feed_dict=feed_images)
+
+		train_writer.add_summary(sum_high_err_img, i)
+		train_writer.add_summary(sum_low_err_img, i)
+
 
 		valid_sum = sess.run(summary_validation_loss, feed_dict={validation_loss:validation_score})
 		validation_writer.add_summary(valid_sum, i)
@@ -368,7 +415,8 @@ while i < nb_max_iter:
 		feed_images = {training_high_error_images: train_imgs[high_error_ind], 
 					training_low_error_images:train_imgs[low_error_ind]}
 
-		sum_high_err_img, sum_low_err_img=sess.run([summary_high_error_images, summary_low_error_images], feed_dict=feed_images)
+		sum_high_err_img, sum_low_err_img=sess.run([summary_training_high_error_images, 
+												summary_training_low_error_images], feed_dict=feed_images)
 
 		train_writer.add_summary(sum_high_err_img, i)
 		train_writer.add_summary(sum_low_err_img, i)
