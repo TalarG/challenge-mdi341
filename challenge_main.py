@@ -8,7 +8,7 @@ from os.path import join
 from sklearn.utils import shuffle
 from utils import conv_layer, fc_layer
 from utils import Cursors
-
+from sklearn.decomposition import PCA
 
 #############################################
 ############### IMPORT DATA #################
@@ -62,12 +62,30 @@ with open(images_test_fname, 'rb') as f:
 
 
 ######### data pre-processing
-train_image_data_mean = np.mean(train_image_data) 
+train_image_data_mean = np.mean(train_image_data, axis=1) 
+train_image_data_std = np.std(train_image_data_mean, axis=1)
 
-train_imgs = (train_image_data - train_image_data_mean) / img_range
-valid_imgs = (valid_image_data - train_image_data_mean) / img_range
-test_imgs = (test_image_data - train_image_data_mean) / img_range
+valid_image_data_mean = np.mean(valid_image_data, axis=1) 
+valid_image_data_std = np.std(valid_image_data_mean, axis=1)
 
+test_image_data_mean = np.mean(test_image_data, axis=1) 
+test_image_data_std = np.std(test_image_data_mean, axis=1)
+
+train_imgs = (train_image_data - train_image_data_mean) / train_image_data_std
+valid_imgs = (valid_image_data - valid_image_data_mean) / valid_image_data_std
+test_imgs = (test_image_data - test_image_data_std) / test_image_data_std
+
+
+power_pca = 1 / 4
+nb_kept_components = 500
+pca = PCA(svd_solver='randomized', n_components=nb_kept_components)
+pca.fit(train_imgs)
+
+pca_preprocess = lambda x: x.dot(pca.components_.T).dot(pca.components_ * np.power(pca.explained_variance_, power_pca).reshape(-1,1))
+
+train_imgs = pca_preprocess(train_imgs)
+valid_imgs = pca_preprocess(valid_imgs)
+test_imgs = pca_preprocess(test_imgs)
 
 #####################################################################################################################
 #####################################################################################################################
@@ -409,8 +427,8 @@ while i < nb_max_iter:
 
 
 		sorted_ind = np.argsort(train_squared_error)
-		high_error_ind = sorted_ind[-5:]
-		low_error_ind = sorted_ind[:5]
+		high_error_ind = sorted_ind[-nb_display_images:]
+		low_error_ind = sorted_ind[:nb_display_images]
 
 		feed_images = {training_high_error_images: train_imgs[high_error_ind], 
 					training_low_error_images:train_imgs[low_error_ind]}
