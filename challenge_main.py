@@ -62,14 +62,14 @@ with open(images_test_fname, 'rb') as f:
 
 
 ######### data pre-processing
-train_image_data_mean = np.mean(train_image_data, axis=1) 
-train_image_data_std = np.std(train_image_data_mean, axis=1)
+train_image_data_mean = np.mean(train_image_data, axis=1).reshape(-1, 1)
+train_image_data_std = np.std(train_image_data, axis=1).reshape(-1, 1)
 
-valid_image_data_mean = np.mean(valid_image_data, axis=1) 
-valid_image_data_std = np.std(valid_image_data_mean, axis=1)
+valid_image_data_mean = np.mean(valid_image_data, axis=1).reshape(-1, 1)
+valid_image_data_std = np.std(valid_image_data, axis=1).reshape(-1, 1)
 
-test_image_data_mean = np.mean(test_image_data, axis=1) 
-test_image_data_std = np.std(test_image_data_mean, axis=1)
+test_image_data_mean = np.mean(test_image_data, axis=1).reshape(-1, 1) 
+test_image_data_std = np.std(test_image_data, axis=1).reshape(-1, 1)
 
 train_imgs = (train_image_data - train_image_data_mean) / train_image_data_std
 valid_imgs = (valid_image_data - valid_image_data_mean) / valid_image_data_std
@@ -108,7 +108,7 @@ nb_max_iter = np.floor(max_epoch / epoch_step)
 dropout = 0.5
 
 summary_dir = '../tensorlog'
-folder_name = 'epoch_%.1f_dp_%i_batch_norm' % (dropout, max_epoch)
+folder_name = 'epoch_%.1f_dp_%i_batch_norm_preprocess' % (dropout, max_epoch)
 full_dir = join(summary_dir, folder_name)
 
 validation_log_frequency = 5
