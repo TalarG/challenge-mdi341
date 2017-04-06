@@ -347,7 +347,7 @@ while i < nb_max_iter:
 
 		montecarlo_predictions_validation = np.mean(montecarlo_samples_validation, axis=2)
 		
-		validation_squared_error = np.sum((montecarlo_predictions_validations - valid_template_data)** 2, axis=1)
+		validation_squared_error = np.sum((montecarlo_predictions_validation - valid_template_data)** 2, axis=1)
 		validation_score = np.mean((montecarlo_predictions_validation - valid_template_data)** 2)
 
 
