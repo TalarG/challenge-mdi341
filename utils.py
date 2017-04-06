@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 #### Functions
-def conv_layer(input_tensor, shape, layer_name, stride, keep_prob, is_training):
+def conv_layer(input_tensor, shape, layer_name, stride, keep_prob, is_training, act=tf.nn.relu):
 	"""
 	Creation of convolution layer followed by a Relu by default
 	"""
@@ -38,7 +38,7 @@ def conv_layer(input_tensor, shape, layer_name, stride, keep_prob, is_training):
 				batch_norm_preactivate = tf.nn.batch_normalization(preactivate, pop_mean, pop_var, beta, scale, epsilon)
 
 		with tf.name_scope('activation'):
-			activations = tf.nn.relu(preactivate)
+			activations = act(preactivate)
 		
 		act_dp = tf.nn.dropout(activations, keep_prob)
 		
