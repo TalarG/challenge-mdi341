@@ -20,6 +20,7 @@ def conv_layer(input_tensor, shape, layer_name, stride, keep_prob, is_training, 
 		    preactivate = tf.nn.conv2d(input_tensor, weights, strides=[1, stride, stride, 1], padding='SAME') + biases
 
 		#import ipdb; ipdb.set_trace()
+		'''
 		with tf.name_scope('batch-normalization'):
 			scale = tf.get_variable(name='scale', shape=preactivate.shape[1:], initializer=tf.constant_initializer(1.0))
 			beta = tf.get_variable(name='beta', shape=preactivate.shape[1:], initializer=tf.constant_initializer(0.0))
@@ -36,7 +37,7 @@ def conv_layer(input_tensor, shape, layer_name, stride, keep_prob, is_training, 
 
 			else:
 				batch_norm_preactivate = tf.nn.batch_normalization(preactivate, pop_mean, pop_var, beta, scale, epsilon)
-
+		'''
 		with tf.name_scope('activation'):
 			activations = act(preactivate)
 		
