@@ -105,7 +105,7 @@ epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
-dropout = 0.5
+dropout = 0.8
 
 summary_dir = '../tensorlog'
 folder_name = 'epoch_%.1f_dp_%i_batch_norm_preprocess' % (dropout, max_epoch)
@@ -132,6 +132,10 @@ tf.set_random_seed(10)
 
 nb_display_images = 8
 
+indices_components_loss = np.array([28,1,105,59,46,15,55,107,83,75,109,16,82,106,25,18,93,89,97,34,92,64,61,48,125,112,49,113,87,33,56,62,96,78,86,42,51,50,41,76,67,20,60,70,110,26,32,99,104,17,43,77,57,101,35,11,91,7,58,8,54,88,19,73,98,38,12,53,2,94,102,127,66,122,126,37,90,24,95,6,14,103,31,68,74,65,10,111,114,27,124,36,39,79,115,72,3,119,22,45,23,100,108,52,117,30,21,44,84,13,69,120,9,40,81,118,85,116,71,80,47,121,63,4,5,0,123,29])
+weights_loss = np.ones(128)
+weights_loss[-20:] = 5
+weights_loss = weights_loss.reshape(1, -1)
 #####################################################################################################################
 #####################################################################################################################
 
@@ -184,7 +188,7 @@ y = fc_layer(hidden13, [3 * 3 * filter_nb_3, template_dim], 'fc-final', keep_pro
 
 """ Loss for regression """
 with tf.name_scope('training'):
-	euclidean_loss = tf.reduce_mean(tf.square(y - y_))
+	euclidean_loss = tf.reduce_mean(tf.square(y - y_) * weights_loss)
 
 tf.summary.scalar('train_euclidean_loss', euclidean_loss)
 
