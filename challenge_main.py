@@ -158,23 +158,25 @@ filter_nb_1 = 10
 filter_nb_2 = 15
 filter_nb_3 = 20
 
-hidden1 = conv_layer(x_, [filter_size, filter_size, 1, filter_nb_1], 'conv-1', stride, keep_prob, is_training, act=tf.nn.sigmoid)
-hidden2 = conv_layer(hidden1, [filter_size, filter_size, filter_nb_1, filter_nb_1], 'conv-2', stride, keep_prob, is_training, act=tf.nn.sigmoid)
+activation_func = tf.nn.relu
+
+hidden1 = conv_layer(x_, [filter_size, filter_size, 1, filter_nb_1], 'conv-1', stride, keep_prob, is_training, act=activation_func)
+hidden2 = conv_layer(hidden1, [filter_size, filter_size, filter_nb_1, filter_nb_1], 'conv-2', stride, keep_prob, is_training, act=activation_func)
 
 pool3 = tf.nn.max_pool(hidden2, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
-hidden4 = conv_layer(pool3, [filter_size, filter_size, filter_nb_1, filter_nb_2], 'conv-4', stride, keep_prob, is_training, act=tf.nn.sigmoid)
-hidden5 = conv_layer(hidden4, [filter_size, filter_size, filter_nb_2, filter_nb_2], 'conv-5', stride, keep_prob, is_training, act=tf.nn.sigmoid)
+hidden4 = conv_layer(pool3, [filter_size, filter_size, filter_nb_1, filter_nb_2], 'conv-4', stride, keep_prob, is_training, act=activation_func)
+hidden5 = conv_layer(hidden4, [filter_size, filter_size, filter_nb_2, filter_nb_2], 'conv-5', stride, keep_prob, is_training, act=activation_func)
 
 pool6 = tf.nn.max_pool(hidden5, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
-hidden7 = conv_layer(pool6, [filter_size, filter_size, filter_nb_2, filter_nb_3], 'conv-7', stride, keep_prob, is_training, act=tf.nn.sigmoid)
-hidden8 = conv_layer(hidden7, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv-8', stride, keep_prob, is_training, act=tf.nn.sigmoid)
+hidden7 = conv_layer(pool6, [filter_size, filter_size, filter_nb_2, filter_nb_3], 'conv-7', stride, keep_prob, is_training, act=activation_func)
+hidden8 = conv_layer(hidden7, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv-8', stride, keep_prob, is_training, act=activation_func)
 
 pool9 = tf.nn.max_pool(hidden8, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
-hidden10 = conv_layer(pool9, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv-10', stride, keep_prob, is_training, act=tf.nn.sigmoid)
-hidden11 = conv_layer(hidden10, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv-11', stride, keep_prob, is_training, act=tf.nn.sigmoid)
+hidden10 = conv_layer(pool9, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv-10', stride, keep_prob, is_training, act=activation_func)
+hidden11 = conv_layer(hidden10, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv-11', stride, keep_prob, is_training, act=activation_func)
 
 pool12 = tf.nn.max_pool(hidden11, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
