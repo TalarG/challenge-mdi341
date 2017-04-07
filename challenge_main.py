@@ -85,7 +85,7 @@ nb_img_test, _ = test_imgs.shape
 _, predictions_size = train_template_data.shape
 
 max_epoch = 500
-batch_train = 300
+batch_train = 800
 batch_test = 2000
 
 epoch_step = batch_train / nb_img_train
