@@ -167,7 +167,7 @@ stride = 1
 filter_size = 3
 filter_nb_1 = 10
 filter_nb_2 = 15
-filter_nb_3 = 20
+filter_nb_3 = 25
 
 activation_func = tf.nn.relu
 
