@@ -125,7 +125,7 @@ reshuffling_frequency_iter = np.floor(reshuffling_frequency / epoch_step).astype
 
 nb_montecarlo_predictions = 50
 
-inital_lr = 1e-3
+inital_lr = 2e-3
 
 np.random.seed(666)
 tf.set_random_seed(10)
@@ -199,7 +199,7 @@ tf.summary.scalar('train_euclidean_loss', euclidean_loss)
 with tf.name_scope('learning_rate'):
     global_step = tf.Variable(0, trainable=False)
     decay_epoch = 10
-    decay_factor = 0.9
+    decay_factor = 0.95
     learning_rate = tf.train.exponential_decay(inital_lr, global_step, np.floor(decay_epoch * nbiter_epoch), decay_factor, staircase=True)
 
 tf.summary.scalar('learning_rate_summary', learning_rate)
