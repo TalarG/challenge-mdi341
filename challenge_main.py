@@ -105,7 +105,7 @@ epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
-dropout = 0.5
+dropout = 0.8
 
 summary_dir = '../tensorlog'
 folder_name = 'epoch_%.1f_dp_%i_batch_norm_preprocess' % (dropout, max_epoch)
