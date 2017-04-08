@@ -464,9 +464,26 @@ while i < nb_max_iter:
 	i += 1
 
 
+##################### PREDICT ON TETS DATASET ###################
+montecarlo_samples_test = np.zeros((nb_img_test, template_dim, nb_montecarlo_predictions), dtype=np.float32)
+nb_iter_test = np.ceil(nb_img_test / batch_test).astype(int)
+
+for jj in np.arange(nb_iter_test):
+	ind_tmp = np.mod(jj * batch_test + np.arange(batch_test), nb_img_test).astype(int)
+	feed_dict = {placeholder_dict['x_']: test_imgs[ind_tmp], placeholder_dict['keep_prob']: dropout, 
+					placeholder_dict['is-training']: 1.0}
+	for kk in np.arange(nb_montecarlo_predictions):
+		mc_sample = sess.run(y, feed_dict=feed_dict)
+		montecarlo_samples_test[ind_tmp, :, kk] = mc_sample
+
+montecarlo_predictions_test = np.mean(montecarlo_samples_test, axis=2)
 
 
+f = open('../template_pred.bin', 'wb')
+for i in range(nb_img_test):
+    f.write(montecarlo_predictions_test[i, :])
 
+f.close()
 
 
 
