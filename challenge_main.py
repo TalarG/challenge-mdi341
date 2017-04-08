@@ -84,7 +84,7 @@ nb_img_test, _ = test_imgs.shape
 
 _, predictions_size = train_template_data.shape
 
-max_epoch = 1500
+max_epoch = 2500
 batch_train = 800
 batch_test = 2000
 
@@ -92,23 +92,23 @@ epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
-dropout = 0.85
-decay_epoch = 20
+dropout = 0.9
+decay_epoch = 50
 decay_factor = 0.95
-inital_lr = 1e-3
+inital_lr = 2e-3
 pre_processing = False
 batch_norm = False
 nb_montecarlo_predictions = 80
 
 summary_dir = '../tensorlog'
-folder_name = 'epoch_%i_dp_%.1f_nbmcdp_%i' % (max_epoch, dropout, nb_montecarlo_predictions)
+folder_name = 'epoch_%i_dp_%.2f_nbmcdp_%i' % (max_epoch, dropout, nb_montecarlo_predictions)
 
 if pre_processing:
 	folder_name += '_preprocess'
 if batch_norm:
 	folder_name += '_batchnorm'
 
-folder_name += '_1'
+folder_name += '_0'
 
 full_dir = join(summary_dir, folder_name)
 
