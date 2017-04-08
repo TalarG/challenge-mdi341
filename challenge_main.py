@@ -112,7 +112,7 @@ folder_name += '_0'
 
 full_dir = join(summary_dir, folder_name)
 
-validation_log_frequency = 5
+validation_log_frequency = 10
 evaluation_log_frequency = 100
 training_log_frequency = 0.5
 reshuffling_frequency = 3.0
