@@ -92,11 +92,11 @@ epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
-dropout = 0.95
-decay_epoch = 50
-decay_factor = 1
+dropout = 0.90
+decay_epoch = 100
+decay_factor = 0.9
 inital_lr = 3e-3
-pre_processing = False
+pre_processing = True
 batch_norm = False
 nb_montecarlo_predictions = 80
 
@@ -112,7 +112,7 @@ folder_name += '_0'
 
 full_dir = join(summary_dir, folder_name)
 
-validation_log_frequency = 10
+validation_log_frequency = 20
 evaluation_log_frequency = 100
 training_log_frequency = 0.5
 reshuffling_frequency = 3.0
@@ -131,7 +131,7 @@ nb_display_images = 8
 #####################################################################################################################
 if pre_processing:
 	power_pca = 1 / 5
-	nb_kept_components = 1000
+	nb_kept_components = 700
 	pca = PCA(svd_solver='randomized', n_components=nb_kept_components)
 	pca.fit(train_imgs)
 
