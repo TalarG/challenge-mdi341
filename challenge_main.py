@@ -394,8 +394,8 @@ while i < nb_max_iter:
 		sum_high_err_img, sum_low_err_img = sess.run([summary_validation_high_error_images, 
 												summary_validation_low_error_images], feed_dict=feed_images)
 
-		train_writer.add_summary(sum_high_err_img, i)
-		train_writer.add_summary(sum_low_err_img, i)
+		validation_writer.add_summary(sum_high_err_img, i)
+		validation_writer.add_summary(sum_low_err_img, i)
 
 
 		valid_sum = sess.run(summary_validation_loss, feed_dict={validation_loss:validation_score})
