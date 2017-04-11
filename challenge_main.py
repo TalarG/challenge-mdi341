@@ -100,7 +100,7 @@ batch_norm = False
 nb_montecarlo_predictions = 80
 
 pre_processing = True
-power_pca = - 1 / 2
+power_pca = - 1 / 5
 nb_kept_components = 2000
 
 summary_dir = '../tensorlog'
