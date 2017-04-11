@@ -84,7 +84,7 @@ nb_img_test, _ = test_imgs.shape
 
 _, predictions_size = train_template_data.shape
 
-max_epoch = 2500
+max_epoch = 3000
 batch_train = 800
 batch_test = 2000
 
@@ -93,7 +93,7 @@ nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
 dropout = 0.90
-decay_epoch = 200
+decay_epoch = 100
 decay_factor = 0.9
 inital_lr = 3e-3
 batch_norm = False
@@ -101,7 +101,7 @@ nb_montecarlo_predictions = 80
 
 pre_processing = True
 power_pca = - 1 / 2
-nb_kept_components = 500
+nb_kept_components = 2000
 
 summary_dir = '../tensorlog'
 folder_name = 'epoch_%i_dp_%.2f_nbmcdp_%i' % (max_epoch, dropout, nb_montecarlo_predictions)
