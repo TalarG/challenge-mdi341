@@ -480,7 +480,8 @@ for jj in np.arange(nb_iter_test):
 montecarlo_predictions_test = np.mean(montecarlo_samples_test, axis=2)
 
 
-f = open('../template_pred.bin', 'wb')
+output_file_name = join('..', folder_name + '_template_pred.bin' )
+f = open(output_file_name, 'wb')
 for i in range(nb_img_test):
     f.write(montecarlo_predictions_test[i, :])
 
