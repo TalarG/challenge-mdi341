@@ -92,7 +92,7 @@ epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
-dropout = 0.90
+dropout = 0.95
 decay_epoch = 100
 decay_factor = 0.9
 inital_lr = 3e-3
