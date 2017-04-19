@@ -202,7 +202,7 @@ y = fc_layer(hidden13, [3 * 3 * filter_nb_3, template_dim], 'fc-final', keep_pro
 
 """ Loss for regression """
 with tf.name_scope('training'):
-	euclidean_loss = tf.reduce_mean(tf.square(y - y_))
+	euclidean_loss = tf.reduce_mean(tf.reduce_sum(tf.square(y - y_), axis=1))
 
 tf.summary.scalar('train_euclidean_loss', euclidean_loss)
 
@@ -382,7 +382,7 @@ while i < nb_max_iter:
 		montecarlo_predictions_validation = np.mean(montecarlo_samples_validation, axis=2)
 		
 		validation_squared_error = np.sum((montecarlo_predictions_validation - valid_template_data)** 2, axis=1)
-		validation_score = np.mean((montecarlo_predictions_validation - valid_template_data)** 2)
+		validation_score = np.mean(np.sum((montecarlo_predictions_validation - valid_template_data)** 2, axis=1), axis=0)
 
 
 		sorted_ind = np.argsort(validation_squared_error)
@@ -439,7 +439,7 @@ while i < nb_max_iter:
 		#centred_prediction_evaluation = montecarlo_samples_evaluation - montecarlo_predictions_evaluation.reshape(-1, -1, 1)
 
 		train_squared_error = np.sum((montecarlo_predictions_evaluation - train_template_data)** 2, axis=1)
-		full_train_loss = np.mean((montecarlo_predictions_evaluation - train_template_data)** 2)
+		full_train_loss = np.mean(np.sum((montecarlo_predictions_evaluation - train_template_data)** 2, axis=1), axis=0)
 
 
 		sorted_ind = np.argsort(train_squared_error)
