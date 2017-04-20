@@ -99,12 +99,12 @@ epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
-dropout = 1.0
+dropout = 0.8
 decay_epoch = 10
 decay_factor = 0.95
 inital_lr = 3e-3 # best 3e-3
 batch_norm = True
-nb_montecarlo_predictions = 1
+nb_montecarlo_predictions = 40
 
 pre_processing = False
 power_pca = 0 #- 1 / 5
@@ -173,10 +173,11 @@ placeholder_dict = {'x_': x_, 'y_': y_, 'keep_prob': keep_prob, 'is-training': i
 
 stride = 1
 filter_size = 3
-filter_nb_1 = 5
-filter_nb_2 = 10
-filter_nb_3 = 25
-filter_nb_4 = 50
+filter_nb_1 = 10
+filter_nb_2 = 15
+filter_nb_3 = 20
+filter_nb_4 = 25
+
 filter_nb_5 = 100
 
 activation_func = tf.nn.relu
@@ -209,14 +210,16 @@ hidden19 = conv_layer(hidden18, [filter_size, filter_size, filter_nb_4, filter_n
 
 pool20 = tf.nn.max_pool(hidden19, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
+'''
 hidden21 = conv_layer(pool20, [filter_size, filter_size, filter_nb_4, filter_nb_5], 'conv-17', stride, keep_prob, is_training, act=activation_func)
 hidden22 = conv_layer(hidden21, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-18', stride, keep_prob, is_training, act=activation_func)
 hidden23 = conv_layer(hidden22, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-19', stride, keep_prob, is_training, act=activation_func)
 hidden24 = conv_layer(hidden23, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-20', stride, keep_prob, is_training, act=activation_func)
 
 pool25 = tf.nn.max_pool(hidden24, [1, 3, 3, 1], [1, 3, 3, 1], padding='SAME', data_format='NHWC', name=None)
+'''
 
-pool25 = tf.reshape(pool25, shape=[-1, 1 * 1 * filter_nb_5])
+pool25 = tf.reshape(pool20, shape=[-1, 1 * 1 * filter_nb_4])
 
 #fc14 = fc_layer(hidden17, [3 * 3 * filter_nb_4, 40], 'fc-1', keep_prob, is_training)
 
