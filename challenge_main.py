@@ -118,7 +118,7 @@ if pre_processing:
 if batch_norm:
 	folder_name += '_batchnorm'
 
-folder_name += '_ultra_deep'
+folder_name += '_ultra_deep_4layers'
 
 full_dir = join(summary_dir, folder_name)
 
