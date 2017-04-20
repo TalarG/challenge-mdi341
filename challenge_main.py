@@ -61,6 +61,13 @@ with open(images_test_fname, 'rb') as f:
     test_image_data = test_image_data.reshape(num_test_images, image_size)
 
 
+###### Template preprocessing
+train_template_data = train_template_data[:, :template_dim]
+valid_template_data = valid_template_data[:, :template_dim]
+
+train_template_data /= np.linalg.norm(train_template_data, axis=1).reshape(-1, 1)
+valid_template_data /= np.linalg.norm(valid_template_data, axis=1).reshape(-1, 1)
+
 ######### data pre-processing
 train_image_data_mean = np.mean(train_image_data, axis=1).reshape(-1, 1)
 train_image_data_std = np.std(train_image_data, axis=1).reshape(-1, 1)
@@ -84,23 +91,23 @@ nb_img_test, _ = test_imgs.shape
 
 _, predictions_size = train_template_data.shape
 
-max_epoch = 3000
-batch_train = 800
-batch_test = 2000
+max_epoch = 300
+batch_train = 600 #800 best
+batch_test = 600
 
 epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
 dropout = 0.95
-decay_epoch = 100
-decay_factor = 0.9
-inital_lr = 3e-3
-batch_norm = False
-nb_montecarlo_predictions = 80
+decay_epoch = 10
+decay_factor = 0.95
+inital_lr = 3e-3 # best 3e-3
+batch_norm = True
+nb_montecarlo_predictions = 50
 
-pre_processing = True
-power_pca = - 1 / 5
+pre_processing = False
+power_pca = 0 #- 1 / 5
 nb_kept_components = 2000
 
 summary_dir = '../tensorlog'
@@ -111,7 +118,7 @@ if pre_processing:
 if batch_norm:
 	folder_name += '_batchnorm'
 
-folder_name += '_0'
+folder_name += '_test_with_10'
 
 full_dir = join(summary_dir, folder_name)
 
@@ -134,7 +141,7 @@ nb_display_images = 8
 #####################################################################################################################
 if pre_processing:
 	pca = PCA(svd_solver='randomized', n_components=nb_kept_components)
-	pca.fit(train_imgs)
+	pca.fit(train_imgs[::3])
 
 	pca_preprocess = lambda x: x.dot(pca.components_.T).dot(pca.components_ * np.power(pca.explained_variance_, power_pca).reshape(-1,1))
 
@@ -168,7 +175,8 @@ stride = 1
 filter_size = 3
 filter_nb_1 = 10
 filter_nb_2 = 15
-filter_nb_3 = 25
+filter_nb_3 = 20
+filter_nb_4 = 25
 
 activation_func = tf.nn.relu
 
@@ -187,14 +195,14 @@ hidden8 = conv_layer(hidden7, [filter_size, filter_size, filter_nb_3, filter_nb_
 
 pool9 = tf.nn.max_pool(hidden8, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
-hidden10 = conv_layer(pool9, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv-10', stride, keep_prob, is_training, act=activation_func)
-hidden11 = conv_layer(hidden10, [filter_size, filter_size, filter_nb_3, filter_nb_3], 'conv-11', stride, keep_prob, is_training, act=activation_func)
+hidden10 = conv_layer(pool9, [filter_size, filter_size, filter_nb_3, filter_nb_4], 'conv-10', stride, keep_prob, is_training, act=activation_func)
+hidden11 = conv_layer(hidden10, [filter_size, filter_size, filter_nb_4, filter_nb_4], 'conv-11', stride, keep_prob, is_training, act=activation_func)
 
 pool12 = tf.nn.max_pool(hidden11, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
-hidden13 = tf.reshape(pool12, shape=[-1, 3 * 3 * filter_nb_3])
+hidden13 = tf.reshape(pool12, shape=[-1, 3 * 3 * filter_nb_4])
 
-y = fc_layer(hidden13, [3 * 3 * filter_nb_3, template_dim], 'fc-final', keep_prob, act=None)
+y = fc_layer(hidden13, [3 * 3 * filter_nb_4, template_dim], 'fc-final', keep_prob, act=None)
 
 #############################################
 ################ THE LOSS ###################
@@ -231,7 +239,6 @@ summary_validation_loss = tf.summary.scalar('validation_euclidean_loss', validat
 
 
 ############ IMAGE SUMMARIES
-
 
 #### Training
 with tf.name_scope('training-high-variance-images'):
