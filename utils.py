@@ -71,8 +71,28 @@ def fc_layer(input_tensor, shape, layer_name, keep_prob, act=tf.nn.relu):
 		    return preactivate
 
 		else:
+
+			#### Batch Norm
+			with tf.name_scope('batch-normalization'):
+				scale = tf.get_variable(name='scale', shape=preactivate.shape[1:], initializer=tf.constant_initializer(1.0))
+				beta = tf.get_variable(name='beta', shape=preactivate.shape[1:], initializer=tf.constant_initializer(0.0))
+				pop_mean = tf.get_variable(name='pop_mean', shape=preactivate.shape[1:], initializer=tf.constant_initializer(0.0), trainable=False)
+				pop_var = tf.get_variable(name='pop-var', shape=preactivate.shape[1:], initializer=tf.constant_initializer(1.0), trainable=False)
+
+				if is_training == 1.0:
+					batch_mean, batch_var = tf.nn.moments(preactivate, axes = [0])
+					train_mean = tf.assign(pop_mean, pop_mean * decay + batch_mean * (1 - decay))
+					train_var = tf.assign(pop_var, pop_var * decay + batch_var * (1 - decay))
+
+					with tf.control_dependencies([train_mean, train_var]):
+						batch_norm_preactivate = tf.nn.batch_normalization(preactivate, batch_mean, batch_var, beta, scale, epsilon)
+
+				else:
+					batch_norm_preactivate = tf.nn.batch_normalization(preactivate, pop_mean, pop_var, beta, scale, epsilon)
+
+			
 			with tf.name_scope('activation'):
-				activations = act(preactivate)
+				activations = act(batch_norm_preactivate)
 
 			act_dp = tf.nn.dropout(activations, keep_prob)
 			return act_dp
