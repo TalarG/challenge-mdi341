@@ -99,9 +99,9 @@ epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
-dropout = 0.95
+dropout = 0.90
 decay_epoch = 10
-decay_factor = 0.95
+decay_factor = 0.97
 inital_lr = 1e-3 # best 3e-3
 batch_norm = True
 nb_montecarlo_predictions = 40
@@ -173,10 +173,10 @@ placeholder_dict = {'x_': x_, 'y_': y_, 'keep_prob': keep_prob, 'is-training': i
 
 stride = 1
 filter_size = 3
-filter_nb_1 = 10
-filter_nb_2 = 15
-filter_nb_3 = 20
-filter_nb_4 = 25
+filter_nb_1 = 5
+filter_nb_2 = 10
+filter_nb_3 = 15
+filter_nb_4 = 20
 
 filter_nb_5 = 100
 
