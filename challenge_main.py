@@ -209,10 +209,10 @@ hidden19 = conv_layer(hidden18, [filter_size, filter_size, filter_nb_4, filter_n
 
 pool20 = tf.nn.max_pool(hidden19, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
-hidden21 = conv_layer(pool20, [filter_size, filter_size, filter_nb_4, filter_nb_5], 'conv-13', stride, keep_prob, is_training, act=activation_func)
-hidden22 = conv_layer(hidden21, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-14', stride, keep_prob, is_training, act=activation_func)
-hidden23 = conv_layer(hidden22, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-15', stride, keep_prob, is_training, act=activation_func)
-hidden24 = conv_layer(hidden23, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-16', stride, keep_prob, is_training, act=activation_func)
+hidden21 = conv_layer(pool20, [filter_size, filter_size, filter_nb_4, filter_nb_5], 'conv-17', stride, keep_prob, is_training, act=activation_func)
+hidden22 = conv_layer(hidden21, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-18', stride, keep_prob, is_training, act=activation_func)
+hidden23 = conv_layer(hidden22, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-19', stride, keep_prob, is_training, act=activation_func)
+hidden24 = conv_layer(hidden23, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-20', stride, keep_prob, is_training, act=activation_func)
 
 pool25 = tf.nn.max_pool(hidden24, [1, 3, 3, 1], [1, 3, 3, 1], padding='SAME', data_format='NHWC', name=None)
 
