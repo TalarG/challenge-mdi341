@@ -174,9 +174,10 @@ placeholder_dict = {'x_': x_, 'y_': y_, 'keep_prob': keep_prob, 'is-training': i
 stride = 1
 filter_size = 3
 filter_nb_1 = 5
-filter_nb_2 = 10
-filter_nb_3 = 15
-filter_nb_4 = 20
+filter_nb_2 = 7
+filter_nb_3 = 9
+filter_nb_4 = 11
+filter_nb_5 = 13
 
 activation_func = tf.nn.relu
 
