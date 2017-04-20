@@ -99,14 +99,14 @@ epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
-dropout = 0.90
+dropout = 0.95
 decay_epoch = 10
 decay_factor = 0.97
-inital_lr = 5e-4 # best 3e-3
+inital_lr = 1e-3 # best 3e-3
 batch_norm = True
 nb_montecarlo_predictions = 40
 
-pre_processing = False
+pre_processing = True
 power_pca = 0 #- 1 / 5
 nb_kept_components = 2000
 
@@ -141,7 +141,7 @@ nb_display_images = 8
 #####################################################################################################################
 if pre_processing:
 	pca = PCA(svd_solver='randomized', n_components=nb_kept_components)
-	pca.fit(train_imgs[::3])
+	pca.fit(train_imgs)
 
 	pca_preprocess = lambda x: x.dot(pca.components_.T).dot(pca.components_ * np.power(pca.explained_variance_, power_pca).reshape(-1,1))
 
