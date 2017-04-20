@@ -92,7 +92,7 @@ nb_img_test, _ = test_imgs.shape
 _, predictions_size = train_template_data.shape
 
 max_epoch = 300
-batch_train = 1100 #800 best
+batch_train = 800 #800 best
 batch_test = 2000
 
 epoch_step = batch_train / nb_img_train
@@ -102,7 +102,7 @@ nb_max_iter = np.floor(max_epoch / epoch_step)
 dropout = 0.95
 decay_epoch = 10
 decay_factor = 0.95
-inital_lr = 3e-3 # best 3e-3
+inital_lr = 1e-3 # best 3e-3
 batch_norm = True
 nb_montecarlo_predictions = 40
 
