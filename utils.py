@@ -47,7 +47,7 @@ def conv_layer(input_tensor, shape, layer_name, stride, keep_prob, is_training, 
 
 
 
-def fc_layer(input_tensor, shape, layer_name, keep_prob, act=tf.nn.relu):
+def fc_layer(input_tensor, shape, layer_name, keep_prob, is_training=0, act=tf.nn.relu):
 	""" Fully connected layer
 	It does a matrix multiply, bias add, and then uses relu to nonlinearize.
 	It also sets up name scoping so that the resultant graph is easy to read, and
@@ -56,6 +56,9 @@ def fc_layer(input_tensor, shape, layer_name, keep_prob, act=tf.nn.relu):
 
 	# Adding a name scope ensures logical grouping of the layers in the graph.
 	with tf.variable_scope(layer_name):
+
+		decay = 0.999
+		epsilon = 1e-3
 
 		# This Variable will hold the state of the weights for the layer
 		#with tf.variable_scope('weights'):
@@ -90,7 +93,7 @@ def fc_layer(input_tensor, shape, layer_name, keep_prob, act=tf.nn.relu):
 				else:
 					batch_norm_preactivate = tf.nn.batch_normalization(preactivate, pop_mean, pop_var, beta, scale, epsilon)
 
-			
+
 			with tf.name_scope('activation'):
 				activations = act(batch_norm_preactivate)
 
