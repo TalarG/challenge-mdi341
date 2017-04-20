@@ -174,10 +174,10 @@ placeholder_dict = {'x_': x_, 'y_': y_, 'keep_prob': keep_prob, 'is-training': i
 stride = 1
 filter_size = 3
 filter_nb_1 = 5
-filter_nb_2 = 7
-filter_nb_3 = 9
-filter_nb_4 = 11
-filter_nb_5 = 13
+filter_nb_2 = 10
+filter_nb_3 = 15
+filter_nb_4 = 20
+filter_nb_5 = 30
 
 activation_func = tf.nn.relu
 
@@ -209,11 +209,18 @@ hidden19 = conv_layer(hidden18, [filter_size, filter_size, filter_nb_4, filter_n
 
 pool20 = tf.nn.max_pool(hidden19, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', data_format='NHWC', name=None)
 
-pool20 = tf.reshape(pool20, shape=[-1, 3 * 3 * filter_nb_4])
+hidden21 = conv_layer(pool20, [filter_size, filter_size, filter_nb_4, filter_nb_5], 'conv-13', stride, keep_prob, is_training, act=activation_func)
+hidden22 = conv_layer(hidden21, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-14', stride, keep_prob, is_training, act=activation_func)
+hidden23 = conv_layer(hidden22, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-15', stride, keep_prob, is_training, act=activation_func)
+hidden24 = conv_layer(hidden23, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-16', stride, keep_prob, is_training, act=activation_func)
+
+pool20 = tf.nn.max_pool(hidden19, [1, 3, 3, 1], [1, 3, 3, 1], padding='SAME', data_format='NHWC', name=None)
+
+pool20 = tf.reshape(pool20, shape=[-1, 1 * 1 * filter_nb_5])
 
 #fc14 = fc_layer(hidden17, [3 * 3 * filter_nb_4, 40], 'fc-1', keep_prob, is_training)
 
-y = fc_layer(pool20, [3 * 3 * filter_nb_4, template_dim], 'fc-1', keep_prob, act=None)
+y = fc_layer(pool20, [1 * 1 * filter_nb_5, template_dim], 'fc-1', keep_prob, act=None)
 
 #############################################
 ################ THE LOSS ###################
