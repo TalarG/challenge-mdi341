@@ -202,7 +202,9 @@ pool12 = tf.nn.max_pool(hidden11, [1, 2, 2, 1], [1, 2, 2, 1], padding='SAME', da
 
 hidden13 = tf.reshape(pool12, shape=[-1, 3 * 3 * filter_nb_4])
 
-y = fc_layer(hidden13, [3 * 3 * filter_nb_4, template_dim], 'fc-final', keep_prob, act=None)
+fc14 = fc_layer(hidden13, [3 * 3 * filter_nb_4, 40], 'fc-1', keep_prob, is_training)
+
+y = fc_layer(fc14, [40, template_dim], 'fc-2', keep_prob, act=None)
 
 #############################################
 ################ THE LOSS ###################
