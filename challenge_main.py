@@ -214,13 +214,13 @@ hidden22 = conv_layer(hidden21, [filter_size, filter_size, filter_nb_5, filter_n
 hidden23 = conv_layer(hidden22, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-15', stride, keep_prob, is_training, act=activation_func)
 hidden24 = conv_layer(hidden23, [filter_size, filter_size, filter_nb_5, filter_nb_5], 'conv-16', stride, keep_prob, is_training, act=activation_func)
 
-pool20 = tf.nn.max_pool(hidden19, [1, 3, 3, 1], [1, 3, 3, 1], padding='SAME', data_format='NHWC', name=None)
+pool25 = tf.nn.max_pool(hidden24, [1, 3, 3, 1], [1, 3, 3, 1], padding='SAME', data_format='NHWC', name=None)
 
-pool20 = tf.reshape(pool20, shape=[-1, 1 * 1 * filter_nb_5])
+pool25 = tf.reshape(pool25, shape=[-1, 1 * 1 * filter_nb_5])
 
 #fc14 = fc_layer(hidden17, [3 * 3 * filter_nb_4, 40], 'fc-1', keep_prob, is_training)
 
-y = fc_layer(pool20, [1 * 1 * filter_nb_5, template_dim], 'fc-1', keep_prob, act=None)
+y = fc_layer(pool25, [1 * 1 * filter_nb_5, template_dim], 'fc-1', keep_prob, act=None)
 
 #############################################
 ################ THE LOSS ###################
