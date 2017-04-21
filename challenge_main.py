@@ -104,7 +104,7 @@ decay_epoch = 10
 decay_factor = 0.97
 inital_lr = 1e-3 # best 3e-3
 
-batch_norm = True
+batch_norm = False
 nb_montecarlo_predictions = 20
 
 pre_processing = False
