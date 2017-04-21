@@ -91,7 +91,7 @@ nb_img_test, _ = test_imgs.shape
 
 _, predictions_size = train_template_data.shape
 
-max_epoch = 300
+max_epoch = 500
 batch_train = 800 #800 best
 batch_test = 2000
 
@@ -103,10 +103,11 @@ dropout = 0.95
 decay_epoch = 10
 decay_factor = 0.97
 inital_lr = 1e-3 # best 3e-3
-batch_norm = True
-nb_montecarlo_predictions = 40
 
-pre_processing = True
+batch_norm = True
+nb_montecarlo_predictions = 20
+
+pre_processing = False
 power_pca = 0 #- 1 / 5
 nb_kept_components = 2000
 
@@ -118,12 +119,12 @@ if pre_processing:
 if batch_norm:
 	folder_name += '_batchnorm'
 
-folder_name += '_ultra_deep_4layers_5blocks'
+folder_name += '_deep_2-3layers_4blocks_elu'
 
 full_dir = join(summary_dir, folder_name)
 
 validation_log_frequency = 20
-evaluation_log_frequency = 100
+evaluation_log_frequency = 1000
 training_log_frequency = 0.5
 reshuffling_frequency = 3.0
 
@@ -132,8 +133,8 @@ evaluation_log_frequency_iter = np.floor(evaluation_log_frequency / epoch_step).
 training_log_frequency_iter = np.floor(training_log_frequency / epoch_step).astype(int)
 reshuffling_frequency_iter = np.floor(reshuffling_frequency / epoch_step).astype(int)
 
-np.random.seed(666)
-tf.set_random_seed(10)
+np.random.seed(10)
+tf.set_random_seed(0)
 
 nb_display_images = 8
 
@@ -511,7 +512,7 @@ montecarlo_predictions_test = np.mean(montecarlo_samples_test, axis=2)
 
 ######### SAVE MODEL #############
 saver = tf.train.Saver()
-saver.save(ses, folder_name + 'tf_model', global_step)
+saver.save(sess, folder_name + 'tf_model', global_step)
 
 
 
