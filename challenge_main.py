@@ -173,14 +173,15 @@ placeholder_dict = {'x_': x_, 'y_': y_, 'keep_prob': keep_prob, 'is-training': i
 
 stride = 1
 filter_size = 3
-filter_nb_1 = 5
-filter_nb_2 = 10
-filter_nb_3 = 15
-filter_nb_4 = 20
+filter_nb_1 = 10
+filter_nb_2 = 13
+filter_nb_3 = 18
+filter_nb_4 = 25
 
 filter_nb_5 = 100
 
 activation_func = tf.nn.relu
+activation_func = tf.nn.elu
 
 hidden1 = conv_layer(x_, [filter_size, filter_size, 1, filter_nb_1], 'conv-1', stride, keep_prob, is_training, act=activation_func)
 hidden2 = conv_layer(hidden1, [filter_size, filter_size, filter_nb_1, filter_nb_1], 'conv-2', stride, keep_prob, is_training, act=activation_func)
