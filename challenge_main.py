@@ -107,9 +107,9 @@ inital_lr = 1e-3 # best 3e-3
 batch_norm = False
 nb_montecarlo_predictions = 20
 
-pre_processing = False
-power_pca = 0 #- 1 / 5
-nb_kept_components = 2000
+pre_processing = True
+power_pca = - 1 / 5
+nb_kept_components = 1800
 
 summary_dir = '../tensorlog'
 folder_name = 'epoch_%i_dp_%.2f_nbmcdp_%i' % (max_epoch, dropout, nb_montecarlo_predictions)
@@ -142,13 +142,15 @@ nb_display_images = 8
 #####################################################################################################################
 if pre_processing:
 	pca = PCA(svd_solver='randomized', n_components=nb_kept_components)
-	pca.fit(train_imgs)
+	pca.fit(train_imgs[::2])
 
+	power_pca = np.flipud(np.linspace(0, -1 / 3, n_components))
 	pca_preprocess = lambda x: x.dot(pca.components_.T).dot(pca.components_ * np.power(pca.explained_variance_, power_pca).reshape(-1,1))
 
 	train_imgs = pca_preprocess(train_imgs)
 	valid_imgs = pca_preprocess(valid_imgs)
 	test_imgs = pca_preprocess(test_imgs)
+
 
 '''
 indices_components_loss = np.array([28,1,105,59,46,15,55,107,83,75,109,16,82,106,25,18,93,89,97,34,92,64,61,48,125,112,49,113,87,33,56,62,96,78,86,42,51,50,41,76,67,20,60,70,110,26,32,99,104,17,43,77,57,101,35,11,91,7,58,8,54,88,19,73,98,38,12,53,2,94,102,127,66,122,126,37,90,24,95,6,14,103,31,68,74,65,10,111,114,27,124,36,39,79,115,72,3,119,22,45,23,100,108,52,117,30,21,44,84,13,69,120,9,40,81,118,85,116,71,80,47,121,63,4,5,0,123,29])
