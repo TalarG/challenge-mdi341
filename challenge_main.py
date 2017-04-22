@@ -115,7 +115,7 @@ summary_dir = '../tensorlog'
 folder_name = 'epoch_%i_dp_%.2f_nbmcdp_%i' % (max_epoch, dropout, nb_montecarlo_predictions)
 
 if pre_processing:
-	folder_name += '_preprocess_%.1f_%i' % (-power_pca, nb_kept_components)
+	folder_name += '_preprocess_%.2f_%i' % (-power_pca, nb_kept_components)
 if batch_norm:
 	folder_name += '_batchnorm'
 
