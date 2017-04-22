@@ -92,7 +92,7 @@ nb_img_test, _ = test_imgs.shape
 _, predictions_size = train_template_data.shape
 
 max_epoch = 1500
-batch_train = 30 #800 best
+batch_train = 75 #800 best
 batch_test = 500
 
 epoch_step = batch_train / nb_img_train
@@ -108,7 +108,7 @@ batch_norm = False
 nb_montecarlo_predictions = 20
 
 pre_processing = True
-power_pca = - 1 / 5
+power_pca = - 1 / 4
 nb_kept_components = 1800
 
 summary_dir = '../tensorlog'
@@ -144,7 +144,7 @@ if pre_processing:
 	pca = PCA(svd_solver='randomized', n_components=nb_kept_components)
 	pca.fit(train_imgs[::2])
 
-	power_pca = np.flipud(np.linspace(0, -1 / 3, nb_kept_components))
+	#power_pca = np.flipud(np.linspace(0, -1 / 3, nb_kept_components))
 	pca_preprocess = lambda x: x.dot(pca.components_.T).dot(pca.components_ * np.power(pca.explained_variance_, power_pca).reshape(-1,1))
 
 	train_imgs = pca_preprocess(train_imgs)
