@@ -144,7 +144,7 @@ if pre_processing:
 	pca = PCA(svd_solver='randomized', n_components=nb_kept_components)
 	pca.fit(train_imgs[::2])
 
-	power_pca = np.flipud(np.linspace(0, -1 / 3, n_components))
+	power_pca = np.flipud(np.linspace(0, -1 / 3, nb_kept_components))
 	pca_preprocess = lambda x: x.dot(pca.components_.T).dot(pca.components_ * np.power(pca.explained_variance_, power_pca).reshape(-1,1))
 
 	train_imgs = pca_preprocess(train_imgs)
