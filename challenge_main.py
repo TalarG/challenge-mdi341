@@ -92,8 +92,8 @@ nb_img_test, _ = test_imgs.shape
 _, predictions_size = train_template_data.shape
 
 max_epoch = 1500
-batch_train = 800 #800 best
-batch_test = 2000
+batch_train = 30 #800 best
+batch_test = 500
 
 epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
