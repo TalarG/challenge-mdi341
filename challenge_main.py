@@ -101,7 +101,7 @@ decay_factor = 0.97
 inital_lr = 1e-3 # best 3e-3
 
 batch_norm = True
-nb_montecarlo_predictions = 20
+nb_montecarlo_predictions = 30
 
 pre_processing = True
 power_pca = - 1 / 5
@@ -119,7 +119,7 @@ folder_name += '_deep_2-3layers_4blocks_elu'
 
 full_dir = join(summary_dir, folder_name)
 
-validation_log_frequency = 20
+validation_log_frequency = 10
 evaluation_log_frequency = 1000
 training_log_frequency = 0.5
 reshuffling_frequency = 3.0
