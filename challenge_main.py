@@ -13,7 +13,6 @@ from sklearn.decomposition import PCA
 #############################################
 ############### IMPORT DATA #################
 #############################################
-
 data_path = '..'
 
 images_train_fname    = join(data_path, 'data_train.bin')
@@ -64,9 +63,6 @@ with open(images_test_fname, 'rb') as f:
 ###### Template preprocessing
 train_template_data = train_template_data[:, :template_dim]
 valid_template_data = valid_template_data[:, :template_dim]
-
-#train_template_data /= np.linalg.norm(train_template_data, axis=1).reshape(-1, 1)
-#valid_template_data /= np.linalg.norm(valid_template_data, axis=1).reshape(-1, 1)
 
 ######### data pre-processing
 train_image_data_mean = np.mean(train_image_data, axis=1).reshape(-1, 1)
