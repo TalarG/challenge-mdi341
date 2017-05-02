@@ -100,15 +100,15 @@ decay_epoch = 10
 decay_factor = 0.97
 inital_lr = 1e-3 # best 3e-3
 
-batch_norm = False
+batch_norm = True
 nb_montecarlo_predictions = 20
 
-pre_processing = True
+pre_processing = False
 power_pca = - 1 / 5
 nb_kept_components = 2000
 
 summary_dir = '../tensorlog'
-folder_name = 'epoch_%i_dp_%.2f_nbmcdp_%i' % (max_epoch, dropout, nb_montecarlo_predictions)
+folder_name = 'epoch_%i_dp_%.2f_nbmcdp_%i_deep_nn' % (max_epoch, dropout, nb_montecarlo_predictions)
 
 if pre_processing:
 	folder_name += '_preprocess_%.2f_%i' % (-power_pca, nb_kept_components)
@@ -171,10 +171,10 @@ placeholder_dict = {'x_': x_, 'y_': y_, 'keep_prob': keep_prob, 'is-training': i
 
 stride = 1
 filter_size = 3
-filter_nb_1 = 10
-filter_nb_2 = 13
-filter_nb_3 = 18
-filter_nb_4 = 25
+filter_nb_1 = 32
+filter_nb_2 = 64
+filter_nb_3 = 128
+filter_nb_4 = 256
 
 filter_nb_5 = 100
 
