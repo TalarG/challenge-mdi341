@@ -98,7 +98,7 @@ nb_max_iter = np.floor(max_epoch / epoch_step)
 dropout = 1.0
 decay_epoch = 10
 decay_factor = 0.97
-inital_lr = 2e-3 # best 3e-3
+inital_lr = 8e-4 # best 3e-3
 
 batch_norm = True
 nb_montecarlo_predictions = 30
