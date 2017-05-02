@@ -95,7 +95,7 @@ epoch_step = batch_train / nb_img_train
 nbiter_epoch = np.floor(nb_img_train / batch_train)
 nb_max_iter = np.floor(max_epoch / epoch_step)
 
-dropout = 0.95
+dropout = 0.9
 decay_epoch = 10
 decay_factor = 0.97
 inital_lr = 1e-3 # best 3e-3
@@ -103,7 +103,7 @@ inital_lr = 1e-3 # best 3e-3
 batch_norm = True
 nb_montecarlo_predictions = 20
 
-pre_processing = False
+pre_processing = True
 power_pca = - 1 / 5
 nb_kept_components = 2000
 
